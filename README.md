@@ -17,9 +17,13 @@ $conf = array(
 );
 
 $conn = new \ExistDB\Client($conf);
+
 $stmt = $conn->prepareQuery('for $someNode in collection("/SomeCollection")/someNodeName[./@somePredicateAttribute=$someValueToBeBound] return $someNode');
+
 $stmt->bindVariable('someValueToBeBound', '5');
+
 $resultPool = $stmt->execute();
+
 $result = $resultPool->getAllResults();
 
 
