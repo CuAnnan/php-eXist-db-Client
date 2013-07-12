@@ -55,7 +55,7 @@ class Client
 		}
 		else
 		{
-			$this->uri = 'http://localhost:8080/exist/xmlrpc';
+			$this->uri = 'http://guest:guest@localhost:8080/exist/xmlrpc';
 		}
 		$this->conn = null;
 		$this->client = \XML_RPC2_Client::create(
@@ -69,6 +69,11 @@ class Client
 	public function storeDocument($docName, $xml, $overWrite = false)
 	{
 		$this->client->parse($xml, $docName, $overWrite?1:0);
+	}
+	
+	public function createCollection($collectionName)
+	{
+		$this->client->createCollection($collectionName);
 	}
 	
 	public function prepareQuery($xql)
