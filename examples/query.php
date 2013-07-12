@@ -8,7 +8,7 @@ include '../lib/DOMResultSet.class.php';
 $connConfig = array(
 		'protocol'=>'http',
 		'host'=>'localhost',
-		'port'=>'8880',
+		'port'=>'8080',
 		'path'=>'/exist/xmlrpc'
 );
 
