@@ -21,14 +21,5 @@ class DOMResultSet extends ResultSet
 		$doc = new \DOMDocument();
 		$doc->loadXML($result->scalar);
 		return $doc;
-	}
-	
-	public function getAllResults()
-	{
-		$results = array();
-		while($this->hasMoreHits)
-		{
-			$results[] = $this->getNextResult();
-		}
-	}
+	}	
 }

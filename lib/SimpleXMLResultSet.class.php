@@ -21,13 +21,4 @@ class SimpleXMLResultSet extends ResultSet
 		$doc = simplexml_load_string($result->scalar);
 		return $doc;
 	}
-
-	public function getAllResults()
-	{
-		$results = array();
-		while($this->hasMoreHits)
-		{
-			$results[] = $this->getNextResult();
-		}
-	}
 }
