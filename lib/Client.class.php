@@ -16,6 +16,7 @@ class Client
 	 */
 	protected $connection;
 	protected $options;
+	protected $collection;
 	
 	protected $query;
 	
@@ -28,13 +29,17 @@ class Client
 	{
 		if($options)
 		{
+			if(isset($options['collection']))
+			{
+				$this->collection = $options['collection'];
+			}
 			$defaults = array(
 				'protocol'=>'http',
 				'user'=>'guest',
 				'password'=>'guest',
 				'host'=>'localhost',
 				'port'=>'8080',
-				'path'=>'/exist/xmlrpc'
+				'path'=>'/exist/xmlrpc/'
 			);
 			foreach($defaults as $part=>$value)
 			{
@@ -55,7 +60,7 @@ class Client
 		}
 		else
 		{
-			$this->uri = 'http://guest:guest@localhost:8080/exist/xmlrpc';
+			$this->uri = 'http://guest:guest@localhost:8080/exist/xmlrpc/';
 		}
 		$this->conn = null;
 		$this->client = \XML_RPC2_Client::create(
@@ -68,7 +73,12 @@ class Client
 	
 	public function storeDocument($docName, $xml, $overWrite = false)
 	{
-		$this->client->parse($xml, $docName, $overWrite?1:0);
+		$this->client->parse($xml, $this->collection.$docName, $overWrite?1:0);
+	}
+	
+	public function deleteDocument($docName)
+	{
+		$this->client->remove($this->collection.$docName);
 	}
 	
 	public function createCollection($collectionName)
@@ -78,7 +88,7 @@ class Client
 	
 	public function prepareQuery($xql)
 	{
-		$query = new Query($xql, $this->client);
+		$query = new Query($xql, $this->client, $this->collection);
 		return $query;
 	}
 }

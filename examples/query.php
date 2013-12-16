@@ -9,12 +9,15 @@ $connConfig = array(
 		'protocol'=>'http',
 		'host'=>'localhost',
 		'port'=>'8080',
-		'path'=>'/exist/xmlrpc'
+		'user'=>'sampleUser',
+		'password'=>'samplePassword',
+		'collection'=>'/path/to/collection/'
+);
 );
 
 $conn = new \ExistDB\Client($connConfig);
 $xql = <<<EOXQL
-for \$cd in collection("/CDCatalog")/CD[./PRICE < \$priceDefinedByBindVariableMethod]
+for \$cd in /CD[./PRICE < \$priceDefinedByBindVariableMethod]
 return \$cd
 EOXQL;
 $stmt = $conn->prepareQuery($xql);

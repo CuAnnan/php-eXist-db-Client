@@ -21,5 +21,12 @@ class DOMResultSet extends ResultSet
 		$doc = new \DOMDocument();
 		$doc->loadXML($result->scalar);
 		return $doc;
-	}	
+	}
+
+	public function current()
+	{
+		$doc = new \DOMDocument();
+		$doc->loadXML($this->retrieve());
+		return $doc;
+	}
 }

@@ -7,14 +7,27 @@ class Query
 	protected $client;
 	protected $returnType;
 	protected $variables;
+	protected $collection;
 	
-	public function __construct($xql, $client,  $options = array('indent' => 'yes','encoding' => 'UTF-8','highlight-matches' => 'none'))
+	public function __construct($xql, $client, $collection = null,  $options = array('indent' => 'yes','encoding' => 'UTF-8','highlight-matches' => 'none'))
 	{
 		$this->xql = $xql;
 		$this->options = $options;
 		$this->client = $client;
 		$this->returnType = "string";
 		$this->variables = array();
+		$this->collection = $collection;
+	}
+	
+	public function getDebugQuery()
+	{
+		$debugQuery = '';
+		foreach($this->variables as $key=>$value)
+		{
+			$debugQuery .= "let \$$key := $value\n";
+		}
+		$debugQuery .= $this->xql;
+		return $debugQuery;
 	}
 	
 	public function setStringReturnType()
@@ -32,9 +45,22 @@ class Query
 		$this->returnType = "DOM";
 	}
 	
+	public function bindParam($variableName, $value)
+	{
+		$this->bindVariable($variableName, $value);
+	}
+	
 	public function bindVariable($variableName, $value)
 	{
 		$this->variables[$variableName]=$value;
+	}
+	
+	public function bindVariables($variables)
+	{
+		foreach($variables as $variable=>$value)
+		{
+			$this->variables[$variable] = $value;
+		}
 	}
 	
 	public function setOption($option, $value)
@@ -48,6 +74,11 @@ class Query
 		{
 			$this->options['variables'] = $this->variables;
 		}
+		if($this->collection)
+		{
+			$this->options['base-uri'] = $this->collection;
+		}
+		
 		$resultId = $this->client->executeQuery(
 			$this->xql,
 			$this->options

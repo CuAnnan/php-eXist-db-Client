@@ -17,8 +17,13 @@ class SimpleXMLResultSet extends ResultSet
 
 		$this->currentHit++;
 		$this->hasMoreHits = $this->currentHit < $this->hits;
-
 		$doc = simplexml_load_string($result->scalar);
+		return $doc;
+	}
+	
+	public function current()
+	{
+		$doc = simplexml_load_string($this->retrieve()->scalar);
 		return $doc;
 	}
 }

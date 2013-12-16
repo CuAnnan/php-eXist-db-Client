@@ -1,6 +1,6 @@
 <?php
 namespace ExistDB;
-class ResultSet
+class ResultSet implements \Iterator
 {
 	protected $client;
 	protected $hits;
@@ -22,15 +22,19 @@ class ResultSet
 	
 	public function getNextResult()
 	{
-		$result = $this->client->retrieve(
-			$this->resultId,
-			$this->currentHit,
-			$this->options
-		);
-	
+		$result = $this->retrieve();
 		$this->currentHit++;
 		$this->hasMoreHits = $this->currentHit < $this->hits;
 		return $result->scalar;
+	}
+	
+	protected function retrieve()
+	{
+		return $this->client->retrieve(
+				$this->resultId,
+				$this->currentHit,
+				$this->options
+		);
 	}
 	
 	public function getAllResults()
@@ -41,5 +45,31 @@ class ResultSet
 			$results[] = $this->getNextResult();
 		}
 		return $results;
+	}
+	
+	public function rewind()
+	{
+		$this->currentHit = 0;
+	}
+	
+	public function current()
+	{
+		$result = $this->retrieve();
+		return $result->scalar;
+	}
+	
+	public function key()
+	{
+		return $this->currentHit;
+	}
+	
+	public function next()
+	{
+		$this->hasMoreHits = ++$this->currentHit < $this->hits;
+	}
+	
+	function valid()
+	{
+		return $this->hasMoreHits;
 	}
 }
